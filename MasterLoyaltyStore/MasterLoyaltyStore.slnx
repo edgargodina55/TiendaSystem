@@ -1,0 +1,15 @@
+<Solution>
+  <Folder Name="/API/">
+    <Project Path="MasterLoyaltyStore.API/MasterLoyaltyStore.API.csproj" />
+  </Folder>
+  <Folder Name="/Bussiness/">
+    <Project Path="MasterLoyaltyStore.Bussiness/MasterLoyaltyStore.Bussiness.csproj" />
+  </Folder>
+  <Folder Name="/Data/">
+    <Project Path="MasterLoyaltyStore.Data/MasterLoyaltyStore.Data.csproj" />
+  </Folder>
+  <Folder Name="/Entities/">
+    <Project Path="MasterLoyaltyStore.Entities/MasterLoyaltyStore.Entities.csproj" />
+  </Folder>
+  <Folder Name="/Frontend/" />
+</Solution>
