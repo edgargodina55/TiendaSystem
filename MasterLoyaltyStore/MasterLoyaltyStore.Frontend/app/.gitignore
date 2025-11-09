@@ -1,0 +1,118 @@
+# See http://help.github.com/ignore-files/ for more about ignoring files.
+
+# compiled output
+/dist
+/tmp
+/out-tsc
+# Only exists if Bazel was run
+/bazel-out
+
+# dependencies
+/node_modules
+
+# profiling files
+chrome-profiler-events*.json
+speed-measure-plugin*.json
+
+# IDEs and editors
+/.idea
+.project
+.classpath
+.c9/
+*.launch
+.settings/
+*.sublime-workspace
+
+# IDE - VSCode
+.vscode/*
+!.vscode/settings.json
+!.vscode/tasks.json
+!.vscode/launch.json
+!.vscode/extensions.json
+.history/*
+
+# misc
+/.sass-cache
+/connect.lock
+/coverage
+/libpeerconnection.log
+npm-debug.log
+yarn-error.log
+testem.log
+/typings
+
+# System Files
+.DS_Store
+Thumbs.db
+# -----------------------
+# Angular / Node
+# -----------------------
+node_modules/
+dist/
+tmp/
+temp/
+out-tsc/
+coverage/
+build/
+
+# -----------------------
+# Angular Environment Files
+# -----------------------
+# Excluye tus archivos de configuración con datos sensibles
+/src/environments/environment*.ts
+
+# -----------------------
+# IDE / Editor
+# -----------------------
+.vscode/
+.idea/
+*.sublime-project
+*.sublime-workspace
+
+# -----------------------
+# Logs & Reports
+# -----------------------
+npm-debug.log*
+yarn-debug.log*
+yarn-error.log*
+pnpm-debug.log*
+lerna-debug.log*
+
+# -----------------------
+# OS generated files
+# -----------------------
+.DS_Store
+Thumbs.db
+ehthumbs.db
+Icon?
+desktop.ini
+
+# -----------------------
+# Misc
+# -----------------------
+*.swp
+*.swo
+*.bak
+*.tmp
+*.orig
+
+# -----------------------
+# Angular Cache (CLI v11+)
+# -----------------------
+.angular/
+.angular/cache/
+.angular/local/
+
+# -----------------------
+# Environment / Secrets
+# -----------------------
+.env
+.env.*
+!.env.example
+
+# -----------------------
+# Package Lock Files (optional)
+# Uncomment si usas un solo gestor de dependencias
+# package-lock.json
+# yarn.lock
+# pnpm-lock.yaml

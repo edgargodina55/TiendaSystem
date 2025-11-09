@@ -1,0 +1,12 @@
+﻿using MasterLoyaltyStore.Entities.Enums;
+
+namespace MasterLoyaltyStore.API.Dtos.User;
+
+public record CreateUserRequest()
+{
+    public string FirstName { get; init; }
+    public string LastName { get; init; }
+    public UserType UserType { get; init; }
+    public string Email { get; init; }
+    public string Password { get; init; }
+}
