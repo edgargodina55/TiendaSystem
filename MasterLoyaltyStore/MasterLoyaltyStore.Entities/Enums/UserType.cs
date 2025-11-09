@@ -1,6 +1,6 @@
 ﻿namespace MasterLoyaltyStore.Entities.Enums;
 
-public enum UserType
+public enum UserTypeId
 {
     Admin = 1,
     Customer

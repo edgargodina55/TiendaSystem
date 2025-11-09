@@ -1,4 +1,5 @@
-﻿using MasterLoyaltyStore.Data.Repositories.Interfaces;
+﻿using AutoMapper;
+using MasterLoyaltyStore.Data.Repositories.Interfaces;
 using MasterLoyaltyStore.Entities.Models;
 using Microsoft.AspNetCore.Mvc;
 
@@ -9,12 +10,13 @@ namespace MasterLoyaltyStore.API.Controllers;
 public class StoreController : ControllerBase
 {
     private readonly ILogger<StoreController> _logger;
-    private readonly IStoreRepository _storeRepository;
+    private readonly IStoreHandler _storeHandler;
+    private readonly IMapper _mapper;
 
-    public StoreController(ILogger<StoreController> logger, IStoreRepository storeRepository)
+    public StoreController(ILogger<StoreController> logger,IStoreHandler storeHandler)
     {
         _logger = logger;
-        _storeRepository = storeRepository;
+        _storeHandler = storeHandler;
     }
     
     
@@ -27,6 +29,10 @@ public class StoreController : ControllerBase
     {
         try
         {
+            
+            await _storeHandler.CreateStoreAsync(store);
+            
+            
             return StatusCode(StatusCodes.Status201Created,new
             {
                 success = true,
