@@ -1,0 +1,92 @@
+<div class="users-page">
+  <div class="header">
+    <h2>Usuarios</h2>
+    <button (click)="toggleForm()">
+      {{ showForm ? 'Cerrar formulario' : 'Crear usuario' }}
+    </button>
+  </div>
+
+  <!-- Formulario de creación -->
+  <div *ngIf="showForm" class="form-card">
+    <form [formGroup]="userForm" (ngSubmit)="onSubmit()">
+      <div class="form-row">
+        <label>Nombre</label>
+        <input type="text" formControlName="firstName" />
+        <small *ngIf="userForm.get('firstName')?.touched && userForm.get('firstName')?.invalid">
+          Requerido
+        </small>
+      </div>
+
+      <div class="form-row">
+        <label>Apellido</label>
+        <input type="text" formControlName="lastName" />
+      </div>
+
+      <div class="form-row">
+        <label>Usuario</label>
+        <input type="text" formControlName="userName" />
+      </div>
+
+      <div class="form-row">
+        <label>Email</label>
+        <input type="email" formControlName="email" />
+      </div>
+
+      <div class="form-row">
+        <label>Dirección</label>
+        <input type="text" formControlName="address" />
+      </div>
+
+      <div class="form-row">
+        <label>Tipo de usuario</label>
+        <select formControlName="userTypeId">
+          <option value="">-- Selecciona --</option>
+          <option *ngFor="let t of userTypes" [value]="t.id">{{ t.name }}</option>
+        </select>
+      </div>
+
+      <div class="form-row">
+        <label>Contraseña</label>
+        <input type="password" formControlName="password" />
+      </div>
+
+      <div class="buttons">
+        <button type="submit" [disabled]="userForm.invalid">Guardar</button>
+        <button type="button" class="cancel" (click)="toggleForm()">Cancelar</button>
+      </div>
+    </form>
+  </div>
+
+  <!-- Tabla de usuarios -->
+  <div class="table-wrapper" *ngIf="users && users.length > 0">
+    <table>
+      <thead>
+        <tr>
+          <th>#</th>
+          <th>Nombre</th>
+          <th>Email</th>
+          <th>Usuario</th>
+          <th>Tipo</th>
+          <th>Dirección</th>
+          <th>Acciones</th>
+        </tr>
+      </thead>
+      <tbody>
+        <tr *ngFor="let u of users; let i = index">
+          <td>{{ i + 1 }}</td>
+          <td>{{ u.fullName }}</td>
+          <td>{{ u.email }}</td>
+          <td>{{ u.userName }}</td>
+          <td>{{ u.roleName }}</td>
+          <td>{{ u.address }}</td>
+          <td>
+            <button (click)="editUser(u)">✏️</button>
+            <button (click)="deleteUser(u.id)">🗑️</button>
+          </td>
+        </tr>
+      </tbody>
+    </table>
+  </div>
+
+  <p *ngIf="!users || users.length === 0" class="no-users">No hay usuarios registrados</p>
+</div>

@@ -1,0 +1,115 @@
+<div class="products-page">
+  <div class="header">
+    <h2>Productos</h2>
+    <button (click)="toggleForm()">
+      {{ showForm ? 'Cerrar formulario' : 'Crear producto' }}
+    </button>
+  </div>
+
+  <!-- Formulario de creación -->
+  <div *ngIf="showForm" class="form-card">
+    <form [formGroup]="productForm" (ngSubmit)="onSubmit()">
+      <div class="form-row">
+        <label>Nombre</label>
+        <input type="text" formControlName="name" />
+        <small *ngIf="productForm.get('name')?.touched && productForm.get('name')?.invalid">
+          Requerido
+        </small>
+      </div>
+
+      <div class="form-row">
+        <label>Código</label>
+        <input type="text" formControlName="code" />
+        <small *ngIf="productForm.get('code')?.touched && productForm.get('code')?.invalid">
+          Requerido
+        </small>
+      </div>
+
+      <div class="form-row">
+        <label>Descripción</label>
+        <textarea formControlName="description" rows="3"></textarea>
+      </div>
+
+      <div class="form-row">
+        <label>URL de la imagen</label>
+        <input type="text" formControlName="imageUrl" />
+      </div>
+
+      <div class="form-row">
+        <label>Stock</label>
+        <input type="number" formControlName="stock" />
+      </div>
+
+      <div class="form-row">
+        <label>Tienda</label>
+        <select formControlName="idStore">
+          <option value="">-- Selecciona --</option>
+          <option *ngFor="let s of stores" [value]="s.storeId">
+            {{ s.name }}
+          </option>
+        </select>
+      </div>
+
+      <div class="form-row">
+        <label>
+          <input type="checkbox" formControlName="status" />
+          Activo
+        </label>
+      </div>
+
+      <div class="buttons">
+        <button type="submit" [disabled]="productForm.invalid">Guardar</button>
+        <button type="button" class="cancel" (click)="toggleForm()">Cancelar</button>
+      </div>
+    </form>
+  </div>
+
+  <!-- Tabla de productos -->
+  <div class="table-wrapper" *ngIf="products && products.length > 0">
+    <table>
+      <thead>
+        <tr>
+          <th>#</th>
+          <th>Imagen</th>
+          <th>Nombre</th>
+          <th>Código</th>
+          <th>Tienda</th>
+          <th>Stock</th>
+          <th>Estado</th>
+          <th>Carrito</th>
+          <th>Acciones</th>
+        </tr>
+      </thead>
+      <tbody>
+        <tr *ngFor="let p of products; let i = index">
+          <td>{{ i + 1 }}</td>
+          <td>
+            <img *ngIf="p.imageUrl" [src]="p.imageUrl" alt="{{ p.name }}" class="thumb">
+            <span *ngIf="!p.imageUrl">Sin imagen</span>
+          </td>
+          <td>{{ p.name }}</td>
+          <td>{{ p.code }}</td>
+          <td>{{ p.idStoreNavigation?.name || p.storeName }}</td>
+          <td>{{ p.stock }}</td>
+          <td>{{ p.status ? 'Activo' : 'Inactivo' }}</td>
+          <td>
+            <select [value]="quantities[p.productId]" (change)="changeQuantity(p.productId, $event.target.value)">
+              <option *ngFor="let n of [1,2,3,4,5,6,7,8,9,10]" [value]="n" [disabled]="n > p.stock">
+                {{ n }}
+              </option>
+            </select>
+            <button (click)="addToCart(p)">🛒</button>
+          </td>
+          <td>
+            <button (click)="editProduct(p)">✏️</button>
+            <button (click)="deleteProduct(p.productId)">🗑️</button>
+          </td>
+        </tr>
+      </tbody>
+    </table>
+  </div>
+
+  <p *ngIf="!products || products.length === 0" class="no-products">
+    No hay productos registrados
+  </p>
+</div>

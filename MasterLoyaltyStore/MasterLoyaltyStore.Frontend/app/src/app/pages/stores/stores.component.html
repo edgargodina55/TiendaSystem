@@ -1,0 +1,70 @@
+<div class="stores-page">
+  <div class="header">
+    <h2>Tiendas</h2>
+    <button (click)="toggleForm()">
+      {{ showForm ? 'Cerrar formulario' : 'Crear tienda' }}
+    </button>
+  </div>
+
+  <!-- Formulario de creación -->
+  <div *ngIf="showForm" class="form-card">
+    <form [formGroup]="storeForm" (ngSubmit)="onSubmit()">
+      <div class="form-row">
+        <label>Nombre</label>
+        <input type="text" formControlName="name" />
+        <small *ngIf="storeForm.get('name')?.touched && storeForm.get('name')?.invalid">
+          Requerido
+        </small>
+      </div>
+
+      <div class="form-row">
+        <label>Dirección</label>
+        <input type="text" formControlName="address" />
+        <small *ngIf="storeForm.get('address')?.touched && storeForm.get('address')?.invalid">
+          Requerido
+        </small>
+      </div>
+
+      <div class="form-row">
+        <label>
+          <input type="checkbox" formControlName="status" />
+          Activa
+        </label>
+      </div>
+
+      <div class="buttons">
+        <button type="submit" [disabled]="storeForm.invalid">Guardar</button>
+        <button type="button" class="cancel" (click)="toggleForm()">Cancelar</button>
+      </div>
+    </form>
+  </div>
+
+  <!-- Tabla de tiendas -->
+  <div class="table-wrapper" *ngIf="stores && stores.length > 0">
+    <table>
+      <thead>
+        <tr>
+          <th>#</th>
+          <th>Nombre</th>
+          <th>Dirección</th>
+          <th>Estado</th>
+          <th>Acciones</th>
+        </tr>
+      </thead>
+      <tbody>
+        <tr *ngFor="let s of stores; let i = index">
+          <td>{{ i + 1 }}</td>
+          <td>{{ s.name }}</td>
+          <td>{{ s.address }}</td>
+          <td>{{ s.status ? 'Activa' : 'Inactiva' }}</td>
+          <td>
+            <button (click)="editStore(s)">✏️</button>
+            <button (click)="deleteStore(s.storeId)">🗑️</button>
+          </td>
+        </tr>
+      </tbody>
+    </table>
+  </div>
+
+  <p *ngIf="!stores || stores.length === 0" class="no-stores">No hay tiendas registradas</p>
+</div>

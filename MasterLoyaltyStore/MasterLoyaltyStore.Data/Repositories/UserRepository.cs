@@ -15,7 +15,8 @@ public class UserRepository :GenericRepository<User>, IUserRepository
     public async Task<User> ExistsUser(string username)
     {
         return await _dbSet.AsNoTracking()
-            .FirstOrDefaultAsync(x => x.Email.Equals(username) && x.Status);
+            .Include(x => x.UserType)
+            .FirstOrDefaultAsync(x => x.UserName.Equals(username) && x.Status);
     }
 
     public async Task<User> FindUserByCredentials(string username, string hashedPassword)
@@ -24,6 +25,7 @@ public class UserRepository :GenericRepository<User>, IUserRepository
             throw new ArgumentNullException("Credenciales invalidas");
 
         User? user = await _dbSet.AsNoTracking()
+            .Include(x => x.UserType)
             .FirstOrDefaultAsync(u =>
                 u.Status &&
                 (u.Email == username || u.UserName == username) &&

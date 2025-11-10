@@ -1,5 +1,4 @@
-﻿using AutoMapper;
-using MasterLoyaltyStore.API.Dtos.Login;
+﻿using MasterLoyaltyStore.API.Dtos.Login;
 using MasterLoyaltyStore.Bussiness.Exceptions;
 using MasterLoyaltyStore.Bussiness.Handlers.Interfaces;
 using MasterLoyaltyStore.Data.Repositories.Interfaces;
@@ -10,14 +9,13 @@ namespace MasterLoyaltyStore.Bussiness.Handlers;
 public class LoginHandler : ILoginHandler
 {
     private readonly IUserRepository _userRepository;
-    private readonly IMapper _mapper;
     private readonly Utils _utils;
 
-    public LoginHandler(IUserRepository userRepository,Utils utils,IMapper mapper)
+    public LoginHandler(IUserRepository userRepository,Utils utils)
     {
         _userRepository = userRepository;
         _utils = utils;
-        _mapper = mapper;
+        
     }
     
     

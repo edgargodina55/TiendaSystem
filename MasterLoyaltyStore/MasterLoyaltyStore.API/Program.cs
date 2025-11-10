@@ -1,36 +1,60 @@
 using System.Text;
+using AutoMapper;
 using MasterLoyaltyStore.API.Configuration;
 using MasterLoyaltyStore.Data.Context;
-using Microsoft.EntityFrameworkCore;
 using Microsoft.AspNetCore.Authentication.JwtBearer;
+using Microsoft.EntityFrameworkCore;
 using Microsoft.IdentityModel.Tokens;
+using Microsoft.Extensions.Logging;
 
 var builder = WebApplication.CreateBuilder(args);
 var services = builder.Services;
-// Add services to the container.
 
+// Add services to the container.
 var connectionString = builder.Configuration.GetConnectionString("DatabaseConnection");
 var jwtString = builder.Configuration["Jwt:key"];
+
 services.AddDbContext<StoreDbContext>(options =>
 {
-    options.UseMySql(connectionString,new MySqlServerVersion(new Version(8, 0, 21)));
+    options.UseMySql(connectionString, new MySqlServerVersion(new Version(8, 0, 21)));
 });
 
 services.AddControllers();
-// Learn more about configuring OpenAPI at https://aka.ms/aspnet/openapi
-services.AddOpenApi();
 
-//Add ServiceCollection
+// 🔴 AutoMapper manual para v15
+var loggerFactory = LoggerFactory.Create(logging =>
+{
+    logging.AddConsole();
+});
+var mapperConfig = new MapperConfiguration(cfg =>
+{
+    cfg.AddMaps(AppDomain.CurrentDomain.GetAssemblies());
+}, loggerFactory);
+IMapper mapper = mapperConfig.CreateMapper();
+services.AddSingleton(mapper);
+
+// tus servicios
 services.AddServices();
 
-//DbContext 
+// 👇 CORS: lo defines
+builder.Services.AddCors(options =>
+{
+    options.AddPolicy("AngularClient", policy =>
+    {
+        policy
+            .WithOrigins("http://localhost:4200")   // origen de Angular
+            .AllowAnyHeader()
+            .AllowAnyMethod();
+    });
+});
 
-//Configuracion Auth
+// Auth
 services.AddAuthentication(config =>
 {
     config.DefaultAuthenticateScheme = JwtBearerDefaults.AuthenticationScheme;
     config.DefaultChallengeScheme = JwtBearerDefaults.AuthenticationScheme;
-}).AddJwtBearer(config =>
+})
+.AddJwtBearer(config =>
 {
     config.RequireHttpsMetadata = false;
     config.SaveToken = true;
@@ -44,30 +68,30 @@ services.AddAuthentication(config =>
     };
 });
 
-services.AddCors(options =>
-{
-    options.AddPolicy("NewPolicy", app =>
-    {
-        app.AllowAnyOrigin().AllowAnyMethod().AllowAnyHeader();
-    });
-});
-
-//Validate Roles using Authorize
+// Roles/policies
 services.AddAuthorization(options =>
 {
-    options.AddPolicy("AdminPolicy",policy => policy.RequireClaim("Admin"));
+    options.AddPolicy("AdminPolicy", policy => policy.RequireClaim("Admin"));
     options.AddPolicy("CustomerPolicy", policy => policy.RequireClaim("Customer"));
 });
 
+services.AddOpenApi();
+
 var app = builder.Build();
 
-// Configure the HTTP request pipeline.
+// pipeline
 if (app.Environment.IsDevelopment())
 {
     app.MapOpenApi();
 }
 
 app.UseHttpsRedirection();
+
+// 👇 👇 👇 AQUÍ es donde te faltaba
+app.UseCors("AngularClient");
+
+// si usas JWT tienes que poner esto también
+app.UseAuthentication();
 
 app.UseAuthorization();
 

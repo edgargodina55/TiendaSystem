@@ -1,0 +1,24 @@
+<div class="index-wrapper">
+  <h2>Bienvenido, {{ user?.fullName }}</h2>
+  <p>Rol: {{ roleName }}</p>
+
+  <nav class="menu">
+    <!-- Si es Admin: muestra todo -->
+    <ng-container *ngIf="isAdmin()">
+      <a routerLink="/index">Home</a>
+      <a routerLink="/users">Usuarios</a>
+      <a routerLink="/stores">Tiendas</a>
+      <a routerLink="/products">Productos</a>
+      <button class="logout" (click)="logout()">Cerrar sesión</button>
+
+    </ng-container>
+
+    <!-- Si es Customer: muestra solo Tiendas y Productos -->
+    <ng-container *ngIf="isCustomer()">
+      <a routerLink="/index">Home</a>
+      <a routerLink="/stores">Tiendas</a>
+      <a routerLink="/products">Productos</a>
+      <button class="logout" (click)="logout()">Cerrar sesión</button>
+    </ng-container>
+  </nav>
+</div>
