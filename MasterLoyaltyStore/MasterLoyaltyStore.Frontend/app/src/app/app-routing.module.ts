@@ -13,6 +13,7 @@ const routes: Routes = [
   { path: 'index', component : IndexComponent, canActivate: [AuthGuard] },
   { path: 'users', component: UsersComponent, canActivate: [AuthGuard] },
   { path: 'stores', component: StoresComponent, canActivate: [AuthGuard] },
+  { path: 'products/:storeId', component: ProductsComponent, canActivate: [AuthGuard] },
   { path: 'products', component: ProductsComponent, canActivate: [AuthGuard] },
   {path: '', redirectTo: 'login',pathMatch: 'full'}
 ];

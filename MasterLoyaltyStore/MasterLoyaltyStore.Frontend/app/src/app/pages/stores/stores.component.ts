@@ -1,5 +1,7 @@
 import { Component, OnInit } from '@angular/core';
 import { FormBuilder, FormGroup, Validators } from '@angular/forms';
+import { Router } from '@angular/router';
+import { AuthService } from 'src/app/services/auth.service';
 import { StoreService } from 'src/app/services/store.service';
 
 @Component({
@@ -15,7 +17,9 @@ export class StoresComponent implements OnInit {
 
   constructor(
     private fb: FormBuilder,
-    private storeService: StoreService
+    private router: Router,
+    private storeService: StoreService,
+    private authService: AuthService
   ) {
     this.storeForm = this.fb.group({
       name: ['', Validators.required],
@@ -77,5 +81,18 @@ export class StoresComponent implements OnInit {
       next: () => this.loadStores(),
       error: (err) => console.error(err)
     });
+  }
+
+  isAdmin(): boolean{
+    return this.authService.isAdmin();
+  }
+
+  isCustomer():boolean{
+    return this.authService.isCustomer();
+  }
+
+
+  goToProducts(storeId:number):void{
+    this.router.navigate(['/products',storeId]);
   }
 }

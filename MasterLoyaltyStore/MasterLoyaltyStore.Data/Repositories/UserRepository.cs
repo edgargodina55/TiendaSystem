@@ -19,6 +19,13 @@ public class UserRepository :GenericRepository<User>, IUserRepository
             .FirstOrDefaultAsync(x => x.UserName.Equals(username) && x.Status);
     }
 
+    public async Task<IEnumerable<User>> GetAllUsers()
+    {
+        return await _dbSet.AsNoTracking()
+            .Include(x => x.UserType)
+            .ToListAsync();   
+    }
+
     public async Task<User> FindUserByCredentials(string username, string hashedPassword)
     {
         if (string.IsNullOrEmpty(username) || string.IsNullOrEmpty(hashedPassword))

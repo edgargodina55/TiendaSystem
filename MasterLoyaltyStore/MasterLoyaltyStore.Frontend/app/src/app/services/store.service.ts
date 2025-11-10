@@ -13,18 +13,18 @@ export class StoreService {
   constructor(private http: HttpClient) {}
 
   getAll(): Observable<any> {
-    return this.http.get(`${this.apiUrl}/Store`);
+    return this.http.get(`${this.apiUrl}/stores`);
   }
 
   create(data: any): Observable<any> {
-    return this.http.post(`${this.apiUrl}/Store`, data);
+    return this.http.post(`${this.apiUrl}/stores`, data);
   }
 
   update(id: number, data: any): Observable<any> {
-    return this.http.put(`${this.apiUrl}/Store/${id}`, data);
+    return this.http.put(`${this.apiUrl}/stores/${id}`, data);
   }
 
   delete(id: number): Observable<any> {
-    return this.http.delete(`${this.apiUrl}/Store/${id}`);
+    return this.http.delete(`${this.apiUrl}/stores/${id}`);
   }
 }

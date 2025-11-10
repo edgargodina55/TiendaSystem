@@ -23,7 +23,7 @@ public class StoreHandler : IStoreHandler
 
     public async Task<IEnumerable<Store>> GetStores()
     {
-        return await _storeRepository.GetAllAsync();
+        return await _storeRepository.GetAllStores();
     }
 
     public async Task CreateStoreAsync(Store newStore, CancellationToken cancellationToken = default)

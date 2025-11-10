@@ -6,10 +6,10 @@ namespace MasterLoyaltyStore.Bussiness.Handlers;
 
 public class ProductHandler : IProductHandler
 {
-    private readonly IGenericRepository<Product> _productRepository;
+    private readonly IProductRepository _productRepository;
 
 
-    public ProductHandler(IGenericRepository<Product> productRepository)
+    public ProductHandler(IProductRepository productRepository)
     {
         _productRepository = productRepository;
     }
@@ -23,6 +23,11 @@ public class ProductHandler : IProductHandler
     public async Task<IEnumerable<Product>> GetProducts()
     {
         return await _productRepository.GetAllAsync();
+    }
+
+    public async Task<IEnumerable<Product>> GetProductsByStoreId(int storeId)
+    {
+        return await _productRepository.GetProductsByStore(storeId);
     }
 
 

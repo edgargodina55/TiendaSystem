@@ -1,5 +1,7 @@
 import { Component, OnInit } from '@angular/core';
 import { FormBuilder, FormGroup, Validators } from '@angular/forms';
+import { ActivatedRoute } from '@angular/router';
+import { AuthService } from 'src/app/services/auth.service';
 import { ProductService } from 'src/app/services/product.service';
 import { StoreService } from 'src/app/services/store.service';
 
@@ -12,14 +14,17 @@ export class ProductsComponent implements OnInit {
 
   showForm = false;
   productForm: FormGroup;
+  storeIdFromRoute: number | null = null; // para saber si estamos viendo productos de una tienda específica
   products: any[] = [];
   stores: any[] = [];   // para el select de tiendas
   quantities: { [productId: number]: number } = {}; // para el select de carrito
 
   constructor(
     private fb: FormBuilder,
+    private authService : AuthService,
     private productService: ProductService,
-    private storeService: StoreService
+    private storeService: StoreService,
+    private route: ActivatedRoute
   ) {
     this.productForm = this.fb.group({
       name: ['', Validators.required],
@@ -33,8 +38,21 @@ export class ProductsComponent implements OnInit {
   }
 
   ngOnInit(): void {
+    this.route.paramMap.subscribe(params => {
+      const id = params.get('storeId');
+      this.storeIdFromRoute = id ? Number(id) : null;
+      this.loadProducts();
+    });
     this.loadProducts();
     this.loadStores();
+  }
+
+  isAdmin(): boolean{
+    return this.authService.isAdmin();
+  }
+
+  isCustomer():boolean{
+    return this.authService.isCustomer();
   }
 
   toggleForm(): void {
@@ -45,24 +63,44 @@ export class ProductsComponent implements OnInit {
   }
 
   loadProducts(): void {
-    this.productService.getAll().subscribe({
-      next: (res) => {
-        this.products = res.data || res || [];
-        // inicializar cantidad por producto
-        this.products.forEach(p => {
-          this.quantities[p.productId] = 1;
-        });
-      },
-      error: (err) => console.error('Error cargando productos', err)
-    });
+    if(this.authService.isAdmin()){
+      this.productService.getAll().subscribe({
+        next: (res) => {
+          this.products = res.data || res || [];
+          // inicializar cantidad por producto
+          this.products.forEach(p => {
+            this.quantities[p.productId] = 1;
+          });
+        },
+        error: (err) => console.error('Error cargando productos', err)
+      });
+    }else if(this.authService.isCustomer()){
+      if (!this.storeIdFromRoute) {
+        console.warn('No se proporcionó storeId en la URL');
+        return;
+      }
+
+      this.productService.getAllByStore(this.storeIdFromRoute).subscribe({
+        next: (res) => {
+          this.products = res.data || res || [];
+          this.products.forEach(p => {
+            this.quantities[p.productId] = 1;
+          });
+        },
+        error: (err) => console.error('Error cargando productos (Customer)', err)
+      });
+    }
   }
 
-  loadStores(): void {
+   loadStores(): void {
     this.storeService.getAll().subscribe({
       next: (res) => {
+        // si tu API responde { success, data: [...] }
         this.stores = res.data || res || [];
       },
-      error: (err) => console.error('Error cargando tiendas', err)
+      error: (err) => {
+        console.error('Error cargando tiendas:', err);
+      }
     });
   }
 
@@ -110,4 +148,5 @@ export class ProductsComponent implements OnInit {
     console.log('Agregar al carrito 👉', { product: prod, quantity: qty });
     // aquí luego ya mandas al servicio de carrito
   }
+
 }

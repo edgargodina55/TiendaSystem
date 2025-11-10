@@ -5,5 +5,5 @@ namespace MasterLoyaltyStore.Bussiness.Interfaces.Factories;
 
 public interface IUserFactory
 {
-    User CreateUserAsync(string email, string password,string firstName, string lastName,int userType);
+    User CreateUser(string email, string password,string address,string firstName, string lastName,int userType);
 }

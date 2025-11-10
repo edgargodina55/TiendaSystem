@@ -6,7 +6,7 @@ using Microsoft.AspNetCore.Mvc;
 
 namespace MasterLoyaltyStore.API.Controllers;
 
-[Route("api/[controller]")]
+[Route("api/products")]
 [AllowAnonymous]
 [ApiController]
 public class ProductController : ControllerBase
@@ -23,13 +23,29 @@ public class ProductController : ControllerBase
     #region GET
 
     [HttpGet]
-    [Authorize(Policy = "Admin")]
-    [Authorize(Policy = "Customer")]
+    [Authorize(Roles = "Admin")]
     public async Task<IActionResult> GetProducts()
     {
         try
         {
             var products = await _productHandler.GetProducts();
+            return Ok(products);
+        }
+        catch (Exception ex)
+        {
+            _logger.LogError(ex, ex.Message);
+            return BadRequest();
+        }
+    }
+    
+    [HttpGet]
+    [Authorize(Roles = "Customer,Admin")]
+    [Route("{storeId:int}")]
+    public async Task<IActionResult> GetProductsByStoreId([FromRoute]int storeId)
+    {
+        try
+        {
+            var products = await _productHandler.GetProductsByStoreId(storeId);
             return Ok(products);
         }
         catch (Exception ex)

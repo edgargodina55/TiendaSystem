@@ -7,13 +7,15 @@ namespace MasterLoyaltyStore.Bussiness.Factories;
 public class AdminFactory : IUserFactory
 {
     
-    public User CreateUserAsync(string email, string password, string firstName, string lastName, int userType)
+    public User CreateUser(string email, string password,string address, string firstName, string lastName, int userType)
     {
         return new User
         {
             FirstName = firstName,
             LastName = lastName,
+            Address = address,
             Email = email,
+            UserName = email,
             PasswordHash = password,
             UserTypeId = (int)UserTypeId.Admin
         };
