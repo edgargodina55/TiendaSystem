@@ -7,6 +7,8 @@ public record class CreateProductRequest
     public string Description{get;init;}
     public string ImageUrl { get; init; }
     public int Stock { get; init; }
-    public DateTime CreatedAt { get; init; } = DateTime.UtcNow;
-    public bool Status { get; init; } = true;
+    public int IdStore { get; init; }
+    public bool? Status { get; init; } = true;
+    public int? IdStoreNavigationStoreId { get; set; }
+
 }

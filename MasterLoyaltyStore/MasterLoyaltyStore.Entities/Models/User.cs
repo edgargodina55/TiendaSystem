@@ -22,4 +22,7 @@ public class User : IdentityUser<int>
     public int UserTypeId { get; set; }
     public virtual UserType UserType { get; set; }
     
+    public virtual ICollection<Cart> Carts { get; set; } = new List<Cart>();
+
+    
 }

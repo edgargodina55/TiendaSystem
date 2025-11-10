@@ -8,6 +8,6 @@ public interface IProductHandler
     Task<IEnumerable<Product>> GetProducts();
     Task<IEnumerable<Product>> GetProductsByStoreId(int storeId);
     
-    Task<Product> CreateAsync(Product newProduct,CancellationToken cancellationToken);
+    Task<Product> CreateAsync(Product newProduct,CancellationToken cancellationToken = default);
       
 }

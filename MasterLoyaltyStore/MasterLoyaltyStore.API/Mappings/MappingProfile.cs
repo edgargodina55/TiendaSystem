@@ -41,6 +41,16 @@ public class MappingProfile : Profile
             .ForMember(dest => dest.RoleName,opt => opt.MapFrom(src => src.UserType.Description))
             .ForMember(dest => dest.RoleId, opt => opt.MapFrom(src => src.UserType.UserTypeId));
         //Product Mappings
+        CreateMap<CreateProductRequest, Product>()
+            .ForMember(dest => dest.Name, opt => opt.MapFrom(src => src.Name))
+            .ForMember(dest => dest.Code, opt => opt.MapFrom(src => src.Code))
+            .ForMember(dest => dest.Stock, opt => opt.MapFrom(src => src.Stock))
+            .ForMember(dest => dest.Status, opt => opt.MapFrom(src => true))
+            .ForMember(dest => dest.CreatedAt, opt => opt.MapFrom(src => DateTime.UtcNow))
+            .ForMember(dest => dest.IdStore,opt => opt.MapFrom(src => src.IdStore))
+            .ForMember(dest => dest.Description, opt => opt.MapFrom(src => src.Description))
+            .ForMember(dest => dest.ImageUrl, opt => opt.MapFrom(src => src.ImageUrl));
+        
         CreateMap<Product, ProductDto>()
             .ForMember(dest => dest.Description,opt => opt.MapFrom(src => src.Description))
             .ForMember(dest => dest.Id, opt => opt.MapFrom(src => src.ProductId));

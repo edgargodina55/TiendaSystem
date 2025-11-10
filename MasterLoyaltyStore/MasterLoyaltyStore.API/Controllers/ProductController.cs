@@ -1,4 +1,5 @@
-﻿using MasterLoyaltyStore.API.Dtos.Product;
+﻿using AutoMapper;
+using MasterLoyaltyStore.API.Dtos.Product;
 using MasterLoyaltyStore.Bussiness.Handlers.Interfaces;
 using MasterLoyaltyStore.Entities.Models;
 using Microsoft.AspNetCore.Authorization;
@@ -13,11 +14,13 @@ public class ProductController : ControllerBase
 {
     private readonly ILogger<ProductController> _logger;
     private readonly IProductHandler _productHandler;
+    private readonly IMapper _mapper;
 
-    public ProductController(ILogger<ProductController> logger, IProductHandler productHandler)
+    public ProductController(ILogger<ProductController> logger, IProductHandler productHandler,IMapper mapper)
     {
         _logger = logger;
         _productHandler = productHandler;
+        _mapper = mapper;
     }
     
     #region GET
@@ -61,11 +64,13 @@ public class ProductController : ControllerBase
     #region POST
 
     [HttpPost]
-    [Authorize(Policy = "Admin")]
+    [Authorize(Roles = "Admin")]
     public async Task<IActionResult> CreateProduct([FromBody]CreateProductRequest request)
     {
         try
         {
+            var newProduct = _mapper.Map<Product>(request);
+            var response = await _productHandler.CreateAsync(newProduct);
             return StatusCode(StatusCodes.Status201Created, request);
         }
         catch (Exception ex)

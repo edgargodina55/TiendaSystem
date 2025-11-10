@@ -12,7 +12,7 @@ using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 namespace MasterLoyaltyStore.Data.Migrations
 {
     [DbContext(typeof(StoreDbContext))]
-    [Migration("20251110013752_InitialCreate")]
+    [Migration("20251110174244_InitialCreate")]
     partial class InitialCreate
     {
         /// <inheritdoc />
@@ -24,6 +24,58 @@ namespace MasterLoyaltyStore.Data.Migrations
                 .HasAnnotation("Relational:MaxIdentifierLength", 64);
 
             MySqlModelBuilderExtensions.AutoIncrementColumns(modelBuilder);
+
+            modelBuilder.Entity("MasterLoyaltyStore.Entities.Models.Cart", b =>
+                {
+                    b.Property<int>("CartId")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("int");
+
+                    MySqlPropertyBuilderExtensions.UseMySqlIdentityColumn(b.Property<int>("CartId"));
+
+                    b.Property<DateTime>("CreatedAt")
+                        .HasColumnType("datetime(6)");
+
+                    b.Property<int>("UserId")
+                        .HasColumnType("int");
+
+                    b.Property<int?>("UserId1")
+                        .HasColumnType("int");
+
+                    b.HasKey("CartId");
+
+                    b.HasIndex("UserId");
+
+                    b.HasIndex("UserId1");
+
+                    b.ToTable("Carts");
+                });
+
+            modelBuilder.Entity("MasterLoyaltyStore.Entities.Models.CartItem", b =>
+                {
+                    b.Property<int>("CartItemId")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("int");
+
+                    MySqlPropertyBuilderExtensions.UseMySqlIdentityColumn(b.Property<int>("CartItemId"));
+
+                    b.Property<int>("CartId")
+                        .HasColumnType("int");
+
+                    b.Property<int>("ProductId")
+                        .HasColumnType("int");
+
+                    b.Property<int>("Quantity")
+                        .HasColumnType("int");
+
+                    b.HasKey("CartItemId");
+
+                    b.HasIndex("CartId");
+
+                    b.HasIndex("ProductId");
+
+                    b.ToTable("CartItems");
+                });
 
             modelBuilder.Entity("MasterLoyaltyStore.Entities.Models.Product", b =>
                 {
@@ -193,6 +245,40 @@ namespace MasterLoyaltyStore.Data.Migrations
                     b.ToTable("UserTypes");
                 });
 
+            modelBuilder.Entity("MasterLoyaltyStore.Entities.Models.Cart", b =>
+                {
+                    b.HasOne("MasterLoyaltyStore.Entities.Models.User", "User")
+                        .WithMany()
+                        .HasForeignKey("UserId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+
+                    b.HasOne("MasterLoyaltyStore.Entities.Models.User", null)
+                        .WithMany("Carts")
+                        .HasForeignKey("UserId1");
+
+                    b.Navigation("User");
+                });
+
+            modelBuilder.Entity("MasterLoyaltyStore.Entities.Models.CartItem", b =>
+                {
+                    b.HasOne("MasterLoyaltyStore.Entities.Models.Cart", "Cart")
+                        .WithMany("Items")
+                        .HasForeignKey("CartId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+
+                    b.HasOne("MasterLoyaltyStore.Entities.Models.Product", "Product")
+                        .WithMany()
+                        .HasForeignKey("ProductId")
+                        .OnDelete(DeleteBehavior.Restrict)
+                        .IsRequired();
+
+                    b.Navigation("Cart");
+
+                    b.Navigation("Product");
+                });
+
             modelBuilder.Entity("MasterLoyaltyStore.Entities.Models.Product", b =>
                 {
                     b.HasOne("MasterLoyaltyStore.Entities.Models.Store", "IdStoreNavigation")
@@ -215,9 +301,19 @@ namespace MasterLoyaltyStore.Data.Migrations
                     b.Navigation("UserType");
                 });
 
+            modelBuilder.Entity("MasterLoyaltyStore.Entities.Models.Cart", b =>
+                {
+                    b.Navigation("Items");
+                });
+
             modelBuilder.Entity("MasterLoyaltyStore.Entities.Models.Store", b =>
                 {
                     b.Navigation("Products");
+                });
+
+            modelBuilder.Entity("MasterLoyaltyStore.Entities.Models.User", b =>
+                {
+                    b.Navigation("Carts");
                 });
 #pragma warning restore 612, 618
         }
