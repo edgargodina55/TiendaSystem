@@ -9,8 +9,12 @@ var builder = WebApplication.CreateBuilder(args);
 var services = builder.Services;
 // Add services to the container.
 
-var connectionString = builder.Configuration.GetConnectionString("DefaultConnection");
+var connectionString = builder.Configuration.GetConnectionString("DatabaseConnection");
 var jwtString = builder.Configuration["Jwt:key"];
+services.AddDbContext<StoreDbContext>(options =>
+{
+    options.UseMySql(connectionString,new MySqlServerVersion(new Version(8, 0, 21)));
+});
 
 services.AddControllers();
 // Learn more about configuring OpenAPI at https://aka.ms/aspnet/openapi
@@ -38,6 +42,21 @@ services.AddAuthentication(config =>
         ClockSkew = TimeSpan.Zero,
         IssuerSigningKey = new SymmetricSecurityKey(Encoding.UTF8.GetBytes(jwtString!))
     };
+});
+
+services.AddCors(options =>
+{
+    options.AddPolicy("NewPolicy", app =>
+    {
+        app.AllowAnyOrigin().AllowAnyMethod().AllowAnyHeader();
+    });
+});
+
+//Validate Roles using Authorize
+services.AddAuthorization(options =>
+{
+    options.AddPolicy("AdminPolicy",policy => policy.RequireClaim("Admin"));
+    options.AddPolicy("CustomerPolicy", policy => policy.RequireClaim("Customer"));
 });
 
 var app = builder.Build();

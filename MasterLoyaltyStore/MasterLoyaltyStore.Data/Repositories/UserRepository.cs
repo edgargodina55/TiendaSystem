@@ -1,4 +1,5 @@
-﻿using MasterLoyaltyStore.Data.Context;
+﻿using MasterLoyaltyStore.Bussiness.Exceptions;
+using MasterLoyaltyStore.Data.Context;
 using MasterLoyaltyStore.Data.Repositories.Interfaces;
 using MasterLoyaltyStore.Entities.Models;
 using Microsoft.EntityFrameworkCore;
@@ -15,5 +16,22 @@ public class UserRepository :GenericRepository<User>, IUserRepository
     {
         return await _dbSet.AsNoTracking()
             .FirstOrDefaultAsync(x => x.Email.Equals(username) && x.Status);
+    }
+
+    public async Task<User> FindUserByCredentials(string username, string hashedPassword)
+    {
+        if (string.IsNullOrEmpty(username) || string.IsNullOrEmpty(hashedPassword))
+            throw new ArgumentNullException("Credenciales invalidas");
+
+        User? user = await _dbSet.AsNoTracking()
+            .FirstOrDefaultAsync(u =>
+                u.Status &&
+                (u.Email == username || u.UserName == username) &&
+                u.PasswordHash == hashedPassword);
+
+        if (user == null)
+            throw new ActionFailedException("Correo o Contrasena incorrecta");
+        
+        return user;
     }
 }

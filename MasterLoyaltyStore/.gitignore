@@ -429,8 +429,8 @@ Thumbs.db
 
 # Environment files (if they contain sensitive data)
 # Uncomment if your environment files have secrets
-# src/environments/environment.prod.ts
-# src/environments/environment.ts
+src/environments/environment.prod.ts
+ src/environments/environment.ts
 
 # Package manager locks (choose one based on your preference)
 # Uncomment the one you DON'T use

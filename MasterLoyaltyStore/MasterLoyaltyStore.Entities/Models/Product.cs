@@ -1,8 +1,11 @@
-﻿namespace MasterLoyaltyStore.Entities.Models;
+﻿using System.ComponentModel.DataAnnotations;
+
+namespace MasterLoyaltyStore.Entities.Models;
 
 public class Product
 {
-    public int IdProduct { get; set; }
+    [Key]
+    public int ProductId { get; set; }
     public string Name { get; set; } = string.Empty;
     public string Code { get; set; } = string.Empty;
     public string Description { get; set; } = string.Empty;

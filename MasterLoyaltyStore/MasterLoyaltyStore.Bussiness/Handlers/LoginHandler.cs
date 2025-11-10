@@ -1,4 +1,5 @@
-﻿using MasterLoyaltyStore.API.Dtos.Login;
+﻿using AutoMapper;
+using MasterLoyaltyStore.API.Dtos.Login;
 using MasterLoyaltyStore.Bussiness.Exceptions;
 using MasterLoyaltyStore.Bussiness.Handlers.Interfaces;
 using MasterLoyaltyStore.Data.Repositories.Interfaces;
@@ -9,12 +10,14 @@ namespace MasterLoyaltyStore.Bussiness.Handlers;
 public class LoginHandler : ILoginHandler
 {
     private readonly IUserRepository _userRepository;
+    private readonly IMapper _mapper;
     private readonly Utils _utils;
 
-    public LoginHandler(IUserRepository userRepository,Utils utils)
+    public LoginHandler(IUserRepository userRepository,Utils utils,IMapper mapper)
     {
         _userRepository = userRepository;
         _utils = utils;
+        _mapper = mapper;
     }
     
     
@@ -40,10 +43,18 @@ public class LoginHandler : ILoginHandler
 
         var hashedPassword = _utils.EncryptSHA256(password);
         user.PasswordHash = hashedPassword;
+        
+        var userAuth = await _userRepository.FindUserByCredentials(username, hashedPassword);
+        if(userAuth == null)
+            throw new NotFoundException("Usuario no encontrado");
+        if(userAuth.UserName == null || userAuth.PasswordHash == null)
+            throw new ArgumentNullException("Usuario y la contrasena es requerido");
+        
+        var token = _utils.GenerateToken(userAuth.UserName,userAuth.PasswordHash,userAuth.UserTypeId);
         return new LoginResponse
         {
-            Token = "",
-            User = new User()
+            Token = token,
+            User = userAuth
         };
     }
 }
